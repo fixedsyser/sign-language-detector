@@ -1,6 +1,7 @@
 import mediapipe as mp
 
 from mediapipe.framework.formats import landmark_pb2
+from matplotlib import pyplot as plt
 import numpy as np
 
 MARGIN = 10  # pixels
@@ -35,3 +36,14 @@ def draw_landmarks_on_image(rgb_image, detection_result: mp.tasks.vision.HandLan
          return annotated_image
    except:
       return rgb_image
+
+def draw_letter_on_image(rgb_image, asl_letter):
+   if len(asl_letter) != 1:
+      return rgb_image
+   fig = plt.figure()
+   fig.figimage(rgb_image, resize=True)
+   fig.text(0, 0.99, asl_letter, fontsize=32, va="top")
+   fig.canvas.draw()
+   annotated_img = np.asarray(fig.canvas.renderer.buffer_rgba())
+   plt.close(fig)
+   return annotated_img

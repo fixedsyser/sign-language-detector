@@ -1,4 +1,8 @@
 import mediapipe as mp
+from util import draw_landmarks_on_image
+from matplotlib import pyplot as plt
+import random
+import glob
 
 class ImageLandmarker:
     def __init__(self):
@@ -19,3 +23,20 @@ class ImageLandmarker:
         
     def close(self):
         self.landmarker.close()
+    
+# plain image detector without ASL logic
+def image_detector(image):
+    try:
+        detector = ImageLandmarker()
+        detection_result = detector.detect(image)
+    finally: 
+        detector.close()
+                    # method in util.py
+    annotated_image = draw_landmarks_on_image(image.numpy_view(), detection_result)
+    plt.axis('off')
+    plt.imshow(annotated_image)
+
+# helper method to get random image from ASL_letters
+def get_random_image():
+    filename = random.choice(glob.glob('./american-sign-language-letters.v1i.coco/train/*.jpg'))
+    return mp.Image.create_from_file(filename)
